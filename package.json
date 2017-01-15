@@ -5,7 +5,7 @@
     "test": "mocha test/"
   },
   "dependencies": {
-    "baconjs": "^0.7.89"
+    "baconjs": "0.7.89"
   },
   "devDependencies": {
     "mocha": "3.2.0"
