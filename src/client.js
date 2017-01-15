@@ -5,15 +5,26 @@ const {commands, actions, aspectRatio, powerStatus} = require('./commands')
 function SdcpClient(config = {}) {
 	const rawClient = RawSdcpClient(config)
 
-	return {
+	const api = {
 		setPower: (powerOn) => {
 			return rawClient.setAction(commands.SET_POWER, powerOn ? powerStatus.START_UP : powerStatus.STANDBY)
-				.map(true)
+				.flatMap(() => {
+					return rawClient.getAction(commands.GET_STATUS_POWER)
+						.flatMap(result => Bacon.once(convertPowerStatusToString(result)))
+				})
 				.firstToPromise()
 		},
 		getPower: () => {
 			return rawClient.getAction(commands.GET_STATUS_POWER)
 				.flatMap(result => Bacon.once(convertPowerStatusToString(result)))
+				.firstToPromise()
+		},
+		setAspectRatio: (ratio) => {
+			return rawClient.setAction(commands.ASPECT_RATIO, ratio)
+				.flatMap(() => {
+					return rawClient.getAction(commands.ASPECT_RATIO)
+						.flatMap(result => Bacon.once(convertAspectRatioToString(result)))
+				})
 				.firstToPromise()
 		},
 		getAspectRatio: () => {
@@ -28,6 +39,7 @@ function SdcpClient(config = {}) {
 			return rawClient.setAction(command, data).firstToPromise()
 		}
 	}
+	return api
 }
 
 function convertPowerStatusToString(result) {
@@ -46,7 +58,6 @@ function convertPowerStatusToString(result) {
 			return new Bacon.Error(`Unknown power status ${result.data} (${result.raw.toString('hex').toUpperCase()})`)
 	}
 }
-
 
 function convertAspectRatioToString(result) {
 	const keys = Object.keys(aspectRatio)
