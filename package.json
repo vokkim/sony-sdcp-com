@@ -1,0 +1,13 @@
+{
+  "name": "sony-sdcp",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/"
+  },
+  "dependencies": {
+    "baconjs": "^0.7.89"
+  },
+  "devDependencies": {
+    "mocha": "3.2.0"
+  }
+}
