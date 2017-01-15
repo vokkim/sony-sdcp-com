@@ -6,7 +6,12 @@ function SdcpClient(config = {}) {
 	const rawClient = RawSdcpClient(config)
 
 	return {
-		getPowerStatus: () => {
+		setPower: (powerOn) => {
+			return rawClient.setAction(commands.SET_POWER, powerOn ? powerStatus.START_UP : powerStatus.STANDBY)
+				.map(true)
+				.firstToPromise()
+		},
+		getPower: () => {
 			return rawClient.getAction(commands.GET_STATUS_POWER)
 				.flatMap(result => Bacon.once(convertPowerStatusToString(result)))
 				.firstToPromise()

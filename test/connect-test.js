@@ -9,14 +9,34 @@ describe('Connect to projector', function() {
   before(startServer(s => {
     server = s
   }))
+
+  it('should turn on power', (done) => {
+    const client = SdcpClient({address: 'localhost', port: server.port})
+    server.mock('020A534F4E59000130020001', '020A534F4E5901013000')
+    client.setPower(true).then(status => {
+      assert.equal(status, true)
+      done()
+    }).catch(err => {
+      done(err)
+    })
+  })
+
   it('should return power status ON', (done) => {
     const client = SdcpClient({address: 'localhost', port: server.port})
-    server.mock('020A534F4E5900010200', '020A534F4E59010102020003')
-    client.getPowerStatus().then(status => {
+    server.mock('020A534F4E5901010200', '020A534F4E59010102020003')
+    client.getPower().then(status => {
       assert.equal(status, 'ON')
       done()
     }).catch(err => {
       done(err)
+    })
+  })
+
+  it('should error if unknown power status', (done) => {
+    const client = SdcpClient({address: 'localhost', port: server.port})
+    server.mock('020A534F4E5901010200', '020A534F4E590101020200FF')
+    client.getPower().catch(err => {
+      done()
     })
   })
 })

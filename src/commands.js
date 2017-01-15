@@ -1,6 +1,6 @@
 const actions = {
-  GET: '00',
-  SET: '01'
+  GET: '01',
+  SET: '00'
 }
 
 const commands = {

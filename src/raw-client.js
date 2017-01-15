@@ -94,7 +94,7 @@ function RawSdcpClient(config = {}) {
 		if (data && typeof data !== 'string') {
 			throw new Error(`Accepts data only as String (HEX) for now, was ${typeof data}`)
 		}
-		const dataLength = ('00' + (data || '').length).substr(-2)
+		const dataLength = ('00' + ((data || '').length/2)).substr(-2)
 
 		return hexStringToBuffer([VERSION, CATEGORY, COMMUNITY, action, command, dataLength, data || ''].join(''))
 	}
