@@ -1,3 +1,8 @@
+/*
+Commands acquired from Sony video projector PROTOCOL MANUAL 1st Edition.
+(Shady PDF from: https://www.digis.ru/upload/iblock/f5a/VPL-VW320,%20VW520_ProtocolManual.pdf )
+*/
+
 const actions = {
   GET: '01',
   SET: '00'

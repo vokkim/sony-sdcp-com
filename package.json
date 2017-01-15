@@ -1,6 +1,12 @@
 {
-  "name": "sony-sdcp",
+  "name": "sony-sdcp-com",
+  "version": "0.0.1",
   "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vokkim/sony-sdcp-com.git"
+  },
   "scripts": {
     "test": "mocha test/"
   },
