@@ -16,6 +16,11 @@ function SdcpClient(config = {}) {
 				.flatMap(result => Bacon.once(convertPowerStatusToString(result)))
 				.firstToPromise()
 		},
+		getAspectRatio: () => {
+			return rawClient.getAction(commands.ASPECT_RATIO)
+				.flatMap(result => Bacon.once(convertAspectRatioToString(result)))
+				.firstToPromise()
+		},
 		getAction: (command, data) => {
 			return rawClient.getAction(command, data).firstToPromise()
 		},
@@ -40,6 +45,17 @@ function convertPowerStatusToString(result) {
 		default:
 			return new Bacon.Error(`Unknown power status ${result.data} (${result.raw.toString('hex').toUpperCase()})`)
 	}
+}
+
+
+function convertAspectRatioToString(result) {
+	const keys = Object.keys(aspectRatio)
+	for (let i=0; i<keys.length; i++) {
+		if (aspectRatio[keys[i]] === result.data) {
+			return keys[i]
+		}
+	}
+	return new Bacon.Error(`Unknown aspect ratio ${result.data} (${result.raw.toString('hex').toUpperCase()})`)
 }
 
 module.exports = {

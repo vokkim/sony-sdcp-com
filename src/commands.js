@@ -16,8 +16,8 @@ const commands = {
 const aspectRatio = {
   NORMAL: '0001',
   V_STRETCH: '000B',
-  '1_85_ZOOM': '000C',
-  '2_35_ZOOM': '000D',
+  ZOOM_1_85: '000C',
+  ZOOM_2_35: '000D',
   STRETCH: '000E',
   SQUEEZE: '000F'
 }
