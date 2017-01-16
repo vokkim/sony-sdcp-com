@@ -22,8 +22,15 @@ function RawSdcpClient(config = {}) {
 		debug('Process queue, next msg', msg)
 		const client = new net.Socket()
 		const disconnected = Bacon.fromEvent(client, 'close').take(1)
+		const errors = Bacon.mergeAll(
+			Bacon.fromEvent(client, 'timeout'),
+			Bacon.fromEvent(client, 'error'),
+			Bacon.later(config.timeout || 5000, {Error: 'Response timeout'})
+		).flatMapError(v => v).take(1)
 		const connected = Bacon.fromNodeCallback(client, 'connect', config.port, config.address).take(1)
+
 		const response = Bacon.fromEvent(client, 'data')
+			.merge(errors)
 			.flatMap(parseResponse)
 			.take(1)
 			.takeUntil(disconnected)
@@ -52,10 +59,13 @@ function RawSdcpClient(config = {}) {
 		return responses.filter(response => response.id === currentId).take(1)
 	}
 
-	function parseResponse(dataBuffer) {
-		const str = dataBuffer.toString('hex').toUpperCase()
+	function parseResponse(value) {
+		if (value && (value.Error || value.errno)) {
+			return Bacon.once(new Bacon.Error(value))
+		}
+		const str = value.toString('hex').toUpperCase()
 		if (str.length < 20) {
-			throw new Error(`Unknown response ${str} (${data})`)
+			return Bacon.once(new Bacon.Error(`Unknown response ${str} (${value})`))
 		}
 		const version = str.substring(0, 2)
 		const category = str.substring(2, 4)
@@ -72,7 +82,7 @@ function RawSdcpClient(config = {}) {
 			dataLength,
 			data,
 			error: success !== '01',
-			raw: dataBuffer
+			raw: value
 		}
 		if (!result.error) {
 			return Bacon.once(result)

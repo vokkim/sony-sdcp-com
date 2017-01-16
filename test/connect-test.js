@@ -53,6 +53,27 @@ describe('Connect to projector', function() {
   })
 })
 
+
+describe('When unable to connect', function() {
+  this.timeout(10000)
+  it('should emit timeout error', (done) => {
+    const client = SdcpClient({address: '1.0.0.0', port: '23456', timeout: 1000})
+    client.setPower(true).catch(err => {
+      assert.equal(err.Error, 'Response timeout')
+      done()
+    })
+  })
+
+  it('should emit conncetion refused error', (done) => {
+    const client = SdcpClient({address: 'localhost', port: '23456', timeout: 1000})
+    client.setPower(true).catch(err => {
+      assert.equal(err.code, 'ECONNREFUSED')
+      done()
+    })
+  })
+})
+
+
 function startServer(cb) {
   return function(done) {
     DummyServer(server => {

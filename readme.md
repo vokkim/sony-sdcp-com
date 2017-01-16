@@ -45,6 +45,7 @@ API
 {
   address,   // Projector IP address
   port,      // Projector port
+  timeout,   // Timeout for waiting projector response, defaults to 5000ms
   community, // Set COMMUNITY field. Defaults to 'SONY' = 0x534F4E59
   debug      // Debug flag, set true to print debug information
 }
