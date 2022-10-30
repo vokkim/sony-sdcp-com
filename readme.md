@@ -12,6 +12,7 @@ Supported Sony projectors should include:
 * VPL-VW320
 * VPL-VW328
 * VPL-VW365
+* VPL-VW260
 
 Usage
 =====
